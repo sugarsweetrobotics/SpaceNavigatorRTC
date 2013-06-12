@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Windows.h>
 #include <atlstr.h> 
 #import "progid:TDxInput.Device.1" no_namespace
 
@@ -14,8 +15,9 @@ private:
 
 public:
 	BOOL IsValid() {return m_ValidFlag;}
+	HWND m_hParentWnd;
 	HWND m_hWnd;
-	void CreateMainWindow (int x, int y, int h, int w, char *caption);
+	void CreateMainWindow (HINSTANCE hInst, int x, int y, int h, int w, char *caption);
 
 public:
 
@@ -36,9 +38,11 @@ public:
 		double data[6];
 	};
 
+   WNDCLASSEX      wndClass;
+   HINSTANCE     m_hInst;
 
 public:
-	C3DConnexion(void);
+	C3DConnexion(HINSTANCE hInst, HWND hWnd);
 	~C3DConnexion(void);
 	
 public:

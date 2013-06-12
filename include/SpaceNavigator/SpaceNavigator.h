@@ -24,6 +24,7 @@
 
 // </rtc-template>
 
+class C3DConnexion;
 // Service Consumer stub headers
 // <rtc-template block="consumer_stub_h">
 
@@ -270,6 +271,8 @@ class SpaceNavigator
   // <rtc-template block="private_operation">
   
   // </rtc-template>
+  C3DConnexion *m_p3DConnexion;
+  
 
 };
 

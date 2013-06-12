@@ -1,4 +1,4 @@
-set(comp_srcs SpaceNavigator.cpp )
+set(comp_srcs SpaceNavigator.cpp 3DConnexion.cpp)
 set(standalone_srcs SpaceNavigatorComp.cpp)
 
 if (DEFINED OPENRTM_INCLUDE_DIRS)

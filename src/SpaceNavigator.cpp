@@ -9,6 +9,47 @@
 
 #include "SpaceNavigator.h"
 
+#include "3DConnexion.h"
+
+
+HWND GetConsoleHwnd(void){
+
+    #define MY_BUFSIZE 1024 // コンソール ウィンドウのタイトル用のバッファサイズ
+    HWND hwndFound;         // 呼び出し側へ返される値
+    char pszNewWindowTitle[MY_BUFSIZE];
+                           // 作成されるウィンドウのタイトルが入ります
+    char pszOldWindowTitle[MY_BUFSIZE]; // 元のウィンドウタイトルが入ります
+
+    // 現在のウィンドウタイトルを取得します
+
+    GetConsoleTitle(pszOldWindowTitle, MY_BUFSIZE);
+
+    // 独自に、ウィンドウの新規タイトルをフォーマットします
+
+    wsprintf(pszNewWindowTitle,"%d/%d",
+             GetTickCount(),
+             GetCurrentProcessId());
+
+    // 現在のウィンドウタイトルを変更します
+
+    SetConsoleTitle(pszNewWindowTitle);
+
+    // ウィンドウタイトルのアップデートを確実なものにさせます
+
+    Sleep(40);
+
+    // ウィンドウの新規タイトルを探しにいきます
+
+    hwndFound=FindWindow(NULL, pszNewWindowTitle);
+
+    // 元のウィンドウタイトルへ戻します
+
+    SetConsoleTitle(pszOldWindowTitle);
+
+    return(hwndFound);
+}
+
+
 // Module specification
 // <rtc-template block="module_spec">
 static const char* spacenavigator_spec[] =
@@ -53,7 +94,7 @@ SpaceNavigator::~SpaceNavigator()
 {
 }
 
-
+HWND hWnd2;
 
 RTC::ReturnCode_t SpaceNavigator::onInitialize()
 {
@@ -76,6 +117,8 @@ RTC::ReturnCode_t SpaceNavigator::onInitialize()
   // Bind variables and configuration variable
   bindParameter("debug", m_debug, "0");
   // </rtc-template>
+
+  hWnd2 = GetConsoleHwnd();
   
   return RTC::RTC_OK;
 }
@@ -102,20 +145,27 @@ RTC::ReturnCode_t SpaceNavigator::onShutdown(RTC::UniqueId ec_id)
 */
 
 
+
 RTC::ReturnCode_t SpaceNavigator::onActivated(RTC::UniqueId ec_id)
 {
+  m_p3DConnexion = new C3DConnexion(::GetModuleHandleA(NULL), hWnd2);
+  m_out.data.length(6);
   return RTC::RTC_OK;
 }
 
 
 RTC::ReturnCode_t SpaceNavigator::onDeactivated(RTC::UniqueId ec_id)
 {
+  delete m_p3DConnexion;
   return RTC::RTC_OK;
 }
 
 
 RTC::ReturnCode_t SpaceNavigator::onExecute(RTC::UniqueId ec_id)
 {
+  m_p3DConnexion->UpdateData();
+  memcpy(&(m_out.data[0]), m_p3DConnexion->data, sizeof(double)*6);
+  m_outOut.write();
   return RTC::RTC_OK;
 }
 

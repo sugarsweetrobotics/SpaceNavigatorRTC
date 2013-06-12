@@ -1,13 +1,19 @@
+#include <Windows.h>
+
 #include "3dconnexion.h"
 
-C3DConnexion::C3DConnexion(void)
+C3DConnexion::C3DConnexion(HINSTANCE hInst, HWND hWnd)
 {
 	HRESULT hr;
 	CComPtr<IUnknown> p3DxDevice;
 	CComPtr<ISimpleDevice> p3DxSimpleDevice;
 	m_ValidFlag = FALSE;
 
-    hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+	m_hParentWnd = hWnd;
+	CreateMainWindow(hInst, 0, 0, 100, 100, "3DConnexion.cpp");
+
+
+	hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
 	hr = p3DxDevice.CoCreateInstance(__uuidof(Device));
 	if (SUCCEEDED(hr))
 	{
@@ -20,7 +26,6 @@ C3DConnexion::C3DConnexion(void)
 			m_ValidFlag = TRUE;
 		}
 	}
-	CreateMainWindow(0, 0, 100, 100, "3DConnexion.cpp");
 }
 
 C3DConnexion::~C3DConnexion(void)
@@ -73,45 +78,58 @@ HRESULT C3DConnexion::UpdateData(void)
 }
 
 LRESULT 
-WINAPI MouseMessageProc( HWND hWnd, unsigned msg, WPARAM wParam,
-                           LPARAM lParam );
+	WINAPI MouseMessageProc( HWND hWnd, unsigned msg, WPARAM wParam,
+	LPARAM lParam );
 
 void 
-C3DConnexion::CreateMainWindow (int x, int y, int h, int w, char *caption)
+	C3DConnexion::CreateMainWindow (HINSTANCE hInst, int x, int y, int h, int w, char *caption)
 
 {
-   WNDCLASS      wndClass;
-   HINSTANCE     hInst;
 
-   hInst = ::GetModuleHandle(NULL);
-   
-   wndClass.style         = CS_HREDRAW | CS_VREDRAW ;
-   wndClass.lpfnWndProc   = (WNDPROC) MouseMessageProc ;
-   wndClass.cbClsExtra    = 8;
-   wndClass.cbWndExtra    = 0;
-   wndClass.hInstance     = hInst;
-   wndClass.hIcon         = NULL;
-   wndClass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
-   wndClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
-   wndClass.lpszMenuName  = NULL ;
-   wndClass.lpszClassName = "3DConnexion.cpp";
-   RegisterClass (&wndClass) ;
+	m_hInst = hInst;//::GetModuleHandleA(NULL);
 
-   m_hWnd = CreateWindow ( "3DConnection.cpp",
-	   caption,
-	   WS_OVERLAPPEDWINDOW, 
-	   x, y, w, h,
-	   NULL, NULL,
-	   hInst,
-	   NULL);   
-   ShowWindow(m_hWnd, SW_HIDE);
-   UpdateWindow(m_hWnd);
+	wndClass.cbSize = sizeof(wndClass);
+	wndClass.style         = CS_HREDRAW | CS_VREDRAW ;
+	wndClass.lpfnWndProc   = MouseMessageProc ;
+	wndClass.cbClsExtra    = 0;
+	wndClass.cbWndExtra    = 0;
+	wndClass.hInstance     = m_hInst;
+	wndClass.hIcon         = NULL;
+	wndClass.hIconSm       = NULL; 
+	wndClass.hCursor       = LoadCursor (NULL, IDC_ARROW) ;
+	wndClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+	wndClass.lpszMenuName  = NULL ;
+	wndClass.lpszClassName = _T("3DConnexion");
+	if (RegisterClassEx (&wndClass) == 0) {
+		DWORD e = GetLastError();
+		return ;
+	}
+	m_hWnd = CreateWindow (_T("3DConnexion"),
+		"3DConnection.cpp",
+		WS_OVERLAPPEDWINDOW, 
+		x, y, w, h,
+		NULL,
+		NULL,
+		m_hInst,
+		NULL);  
+	DWORD e = GetLastError();
+	ShowWindow(m_hWnd, SW_SHOW);
+	UpdateWindow(m_hWnd);
+	SetFocus( m_hWnd );                 //フォーカスを設定
+
+	MSG msg;
+	if(GetMessage( &msg, NULL, 0, 0 )){
+		TranslateMessage( &msg );
+		DispatchMessage( &msg );
+	}
+
+
 }
 
 LRESULT WINAPI MouseMessageProc( HWND hWnd,
-								unsigned msg,
-								WPARAM wParam,
-								LPARAM lParam)
+	unsigned msg,
+	WPARAM wParam,
+	LPARAM lParam)
 {
 	switch ( msg ) {
 	case WM_ACTIVATEAPP:
