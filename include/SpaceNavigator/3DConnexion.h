@@ -40,6 +40,7 @@ public:
 
    WNDCLASSEX      wndClass;
    HINSTANCE     m_hInst;
+   
 
 public:
 	C3DConnexion(HINSTANCE hInst, HWND hWnd);

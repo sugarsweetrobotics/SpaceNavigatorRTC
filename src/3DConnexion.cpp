@@ -77,16 +77,15 @@ HRESULT C3DConnexion::UpdateData(void)
 	return E_FAIL;
 }
 
-LRESULT 
-	WINAPI MouseMessageProc( HWND hWnd, unsigned msg, WPARAM wParam,
+LRESULT 	WINAPI MouseMessageProc( HWND hWnd, unsigned msg, WPARAM wParam,
 	LPARAM lParam );
 
 void 
 	C3DConnexion::CreateMainWindow (HINSTANCE hInst, int x, int y, int h, int w, char *caption)
 
 {
-
-	m_hInst = hInst;//::GetModuleHandleA(NULL);
+	DWORD e;
+	m_hInst = hInst;
 
 	wndClass.cbSize = sizeof(wndClass);
 	wndClass.style         = CS_HREDRAW | CS_VREDRAW ;
@@ -101,7 +100,7 @@ void
 	wndClass.lpszMenuName  = NULL ;
 	wndClass.lpszClassName = _T("3DConnexion");
 	if (RegisterClassEx (&wndClass) == 0) {
-		DWORD e = GetLastError();
+		e = GetLastError();
 		return ;
 	}
 	m_hWnd = CreateWindow (_T("3DConnexion"),
@@ -112,24 +111,15 @@ void
 		NULL,
 		m_hInst,
 		NULL);  
-	DWORD e = GetLastError();
+	e = GetLastError();
 	ShowWindow(m_hWnd, SW_SHOW);
 	UpdateWindow(m_hWnd);
 	SetFocus( m_hWnd );                 //フォーカスを設定
 
-	MSG msg;
-	if(GetMessage( &msg, NULL, 0, 0 )){
-		TranslateMessage( &msg );
-		DispatchMessage( &msg );
-	}
-
-
 }
 
-LRESULT WINAPI MouseMessageProc( HWND hWnd,
-	unsigned msg,
-	WPARAM wParam,
-	LPARAM lParam)
+
+LRESULT WINAPI MouseMessageProc( HWND hWnd,	unsigned msg, WPARAM wParam, LPARAM lParam)
 {
 	switch ( msg ) {
 	case WM_ACTIVATEAPP:

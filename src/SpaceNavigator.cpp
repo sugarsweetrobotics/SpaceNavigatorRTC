@@ -118,8 +118,6 @@ RTC::ReturnCode_t SpaceNavigator::onInitialize()
   bindParameter("debug", m_debug, "0");
   // </rtc-template>
 
-  hWnd2 = GetConsoleHwnd();
-  
   return RTC::RTC_OK;
 }
 
@@ -148,7 +146,7 @@ RTC::ReturnCode_t SpaceNavigator::onShutdown(RTC::UniqueId ec_id)
 
 RTC::ReturnCode_t SpaceNavigator::onActivated(RTC::UniqueId ec_id)
 {
-  m_p3DConnexion = new C3DConnexion(::GetModuleHandleA(NULL), hWnd2);
+  m_p3DConnexion = new C3DConnexion(::GetModuleHandle(NULL), GetConsoleHwnd());
   m_out.data.length(6);
   return RTC::RTC_OK;
 }
