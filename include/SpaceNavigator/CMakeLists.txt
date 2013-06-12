@@ -1,4 +1,4 @@
-set(hdrs SpaceNavigator.h
+set(hdrs SpaceNavigator.h 3DConnexion.h
     PARENT_SCOPE
     )
 
