@@ -1,0 +1,54 @@
+# SpaceNavigator CMake config file
+#
+# This file sets the following variables:
+# SpaceNavigator_FOUND - Always TRUE.
+# SpaceNavigator_INCLUDE_DIRS - Directories containing the SpaceNavigator include files.
+# SpaceNavigator_IDL_DIRS - Directories containing the SpaceNavigator IDL files.
+# SpaceNavigator_LIBRARIES - Libraries needed to use SpaceNavigator.
+# SpaceNavigator_DEFINITIONS - Compiler flags for SpaceNavigator.
+# SpaceNavigator_VERSION - The version of SpaceNavigator found.
+# SpaceNavigator_VERSION_MAJOR - The major version of SpaceNavigator found.
+# SpaceNavigator_VERSION_MINOR - The minor version of SpaceNavigator found.
+# SpaceNavigator_VERSION_REVISION - The revision version of SpaceNavigator found.
+# SpaceNavigator_VERSION_CANDIDATE - The candidate version of SpaceNavigator found.
+
+message(STATUS "Found SpaceNavigator-@PROJECT_VERSION@")
+set(SpaceNavigator_FOUND TRUE)
+
+find_package(<dependency> REQUIRED)
+
+#set(SpaceNavigator_INCLUDE_DIRS
+#    "@CMAKE_INSTALL_PREFIX@/include/@PROJECT_NAME_LOWER@-@PROJECT_VERSION_MAJOR@"
+#    ${<dependency>_INCLUDE_DIRS}
+#    )
+#
+#set(SpaceNavigator_IDL_DIRS
+#    "@CMAKE_INSTALL_PREFIX@/include/@PROJECT_NAME_LOWER@-@PROJECT_VERSION_MAJOR@/idl")
+set(SpaceNavigator_INCLUDE_DIRS
+    "@CMAKE_INSTALL_PREFIX@/include/@CPACK_PACKAGE_FILE_NAME@"
+    ${<dependency>_INCLUDE_DIRS}
+    )
+set(SpaceNavigator_IDL_DIRS
+    "@CMAKE_INSTALL_PREFIX@/include/@CPACK_PACKAGE_FILE_NAME@/idl")
+
+
+if(WIN32)
+    set(SpaceNavigator_LIBRARIES
+        "@CMAKE_INSTALL_PREFIX@/@LIB_INSTALL_DIR@/@CMAKE_SHARED_LIBRARY_PREFIX@@PROJECT_NAME_LOWER@@CMAKE_STATIC_LIBRARY_SUFFIX@"
+        ${<dependency>_LIBRARIES}
+        )
+else(WIN32)
+    set(SpaceNavigator_LIBRARIES
+        "@CMAKE_INSTALL_PREFIX@/@LIB_INSTALL_DIR@/@CMAKE_SHARED_LIBRARY_PREFIX@@PROJECT_NAME_LOWER@@CMAKE_SHARED_LIBRARY_SUFFIX@"
+        ${<dependency>_LIBRARIES}
+        )
+endif(WIN32)
+
+set(SpaceNavigator_DEFINITIONS ${<dependency>_DEFINITIONS})
+
+set(SpaceNavigator_VERSION @PROJECT_VERSION@)
+set(SpaceNavigator_VERSION_MAJOR @PROJECT_VERSION_MAJOR@)
+set(SpaceNavigator_VERSION_MINOR @PROJECT_VERSION_MINOR@)
+set(SpaceNavigator_VERSION_REVISION @PROJECT_VERSION_REVISION@)
+set(SpaceNavigator_VERSION_CANDIDATE @PROJECT_VERSION_CANDIDATE@)
+
